@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Moor Tech – Digital Learning Platform</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600;700&display=swap');
+    :root{
+      --gold:#FFD700;--gold-light:#FFE94D;--gold-dark:#B8960C;
+      --black:#080808;--dark:#101010;--dark2:#181818;--dark3:#202020;
+      --white:#FFFFFF;--cyan:#00F5FF;--pink:#FF2D78;--purple:#8B5CF6;--green:#00FF88;
+      --muted:#777;--border:rgba(255,215,0,0.15);
+    }
+    *{margin:0;padding:0;box-sizing:border-box;}
+    html{scroll-behavior:smooth;}
+    body{background:var(--black);color:var(--white);font-family:'DM Sans',sans-serif;overflow-x:hidden;}
+    /* SCROLLBAR */
+    ::-webkit-scrollbar{width:3px;}
+    ::-webkit-scrollbar-track{background:var(--black);}
+    ::-webkit-scrollbar-thumb{background:var(--gold-dark);border-radius:2px;}
+    /* NAV */
+    nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:18px 5%;display:flex;align-items:center;justify-content:space-between;background:rgba(8,8,8,0.9);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);transition:all 0.3s;}
+    nav.scrolled{padding:14px 5%;background:rgba(8,8,8,0.98);}
+    .logo{font-family:'Playfair Display',serif;font-size:1.7rem;font-weight:900;color:var(--gold);letter-spacing:-1px;text-decoration:none;}
+    .logo span{color:var(--white);}
+    .nav-links{display:flex;gap:32px;list-style:none;}
+    .nav-links a{color:var(--muted);text-decoration:none;font-size:0.88rem;font-weight:500;transition:color 0.3s;position:relative;}
+    .nav-links a::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:1px;background:var(--gold);transition:width 0.3s;}
+    .nav-links a:hover{color:var(--gold);}
+    .nav-links a:hover::after{width:100%;}
+    .nav-cta{background:var(--gold);color:var(--black);padding:9px 22px;border-radius:4px;text-decoration:none;font-weight:700;font-size:0.85rem;transition:all 0.3s;}
+    .nav-cta:hover{background:var(--gold-light);transform:translateY(-1px);box-shadow:0 6px 20px rgba(255,215,0,0.3);}
+    .hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;padding:4px;}
+    .hamburger span{width:22px;height:2px;background:var(--gold);transition:all 0.3s;display:block;}
+    /* MOBILE MENU */
+    .mobile-menu{display:none;position:fixed;inset:0;background:rgba(8,8,8,0.99);z-index:999;flex-direction:column;align-items:center;justify-content:center;gap:36px;}
+    .mobile-menu.open{display:flex;}
+    .mobile-menu a{font-family:'Playfair Display',serif;font-size:2.2rem;color:var(--white);text-decoration:none;transition:color 0.3s;}
+    .mobile-menu a:hover{color:var(--gold);}
+    .mobile-close{position:absolute;top:24px;right:5%;background:none;border:none;color:var(--gold);font-size:1.8rem;}
+    /* HERO */
+    #home{min-height:100vh;display:flex;align-items:center;padding:120px 5% 80px;position:relative;overflow:hidden;}
+    .hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 65% 40%,rgba(255,215,0,0.05) 0%,transparent 60%),radial-gradient(ellipse 50% 50% at 15% 80%,rgba(0,245,255,0.03) 0%,transparent 50%),radial-gradient(ellipse 40% 40% at 85% 10%,rgba(255,45,120,0.03) 0%,transparent 50%);}
+    .hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,215,0,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,215,0,0.025) 1px,transparent 1px);background-size:64px 64px;}
+    .hero-content{position:relative;z-index:2;max-width:680px;}
+    .badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,215,0,0.07);border:1px solid rgba(255,215,0,0.22);padding:6px 16px;border-radius:100px;font-size:0.72rem;font-weight:600;color:var(--gold);letter-spacing:2px;text-transform:uppercase;margin-bottom:28px;animation:fadeUp 0.8s ease forwards;opacity:0;}
+    .badge .dot{width:6px;height:6px;background:var(--green);border-radius:50%;animation:pulse 1.5s infinite;}
+    @keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.4;transform:scale(0.7);}}
+    h1{font-family:'Playfair Display',serif;font-size:clamp(2.8rem,7vw,5.5rem);font-weight:900;line-height:1.05;margin-bottom:24px;animation:fadeUp 0.8s 0.15s ease forwards;opacity:0;}
+    .gold-text{color:var(--gold);}
+    .outline-text{-webkit-text-stroke:1.5px var(--gold);color:transparent;}
+    .hero-sub{font-size:1rem;color:var(--muted);line-height:1.85;max-width:500px;margin-bottom:40px;animation:fadeUp 0.8s 0.3s ease forwards;opacity:0;}
+    .hero-btns{display:flex;gap:14px;flex-wrap:wrap;animation:fadeUp 0.8s 0.45s ease forwards;opacity:0;}
+    .btn-gold{background:var(--gold);color:var(--black);padding:13px 30px;border-radius:4px;text-decoration:none;font-weight:700;font-size:0.88rem;display:inline-flex;align-items:center;gap:8px;transition:all 0.3s;}
+    .btn-gold:hover{background:var(--gold-light);transform:translateY(-2px);box-shadow:0 10px 28px rgba(255,215,0,0.3);}
+    .btn-outline{background:transparent;color:var(--white);padding:13px 30px;border-radius:4px;text-decoration:none;font-weight:600;font-size:0.88rem;border:1px solid rgba(255,255,255,0.18);display:inline-flex;align-items:center;gap:8px;transition:all 0.3s;}
+    .btn-outline:hover{border-color:var(--gold);color:var(--gold);transform:translateY(-2px);}
+    .hero-stats{display:flex;gap:40px;margin-top:60px;animation:fadeUp 0.8s 0.6s ease forwards;opacity:0;flex-wrap:wrap;}
+    .stat-num{font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;color:var(--gold);line-height:1;}
+    .stat-label{font-size:0.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:4px;}
+    /* STATS STRIP */
+    .stats-strip{display:grid;grid-template-columns:repeat(4,1fr);background:var(--dark);border-top:1px solid rgba(255,255,255,0.04);border-bottom:1px solid rgba(255,255,255,0.04);}
+    .strip-item{padding:40px 5%;text-align:center;border-right:1px solid rgba(255,255,255,0.04);}
+    .strip-item:last-child{border-right:none;}
+    .strip-num{font-family:'Playfair Display',serif;font-size:2.4rem;font-weight:900;color:var(--gold);}
+    .strip-label{font-size:0.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:4px;}
+    /* SECTIONS */
+    section{padding:100px 5%;}
+    .section-label{font-size:0.72rem;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:14px;}
+    .section-title{font-family:'Playfair Display',serif;font-size:clamp(1.9rem,4vw,3rem);font-weight:900;line-height:1.15;margin-bottom:18px;}
+    .section-sub{color:var(--muted);font-size:0.95rem;line-height:1.85;max-width:540px;}
+    /* ABOUT */
+    #about{background:var(--dark);}
+    .about-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;margin-top:60px;}
+    .feature-list{display:flex;flex-direction:column;gap:16px;margin-top:36px;}
+    .feature-item{display:flex;gap:14px;align-items:flex-start;padding:18px;background:var(--dark2);border:1px solid rgba(255,255,255,0.04);border-radius:10px;transition:all 0.3s;cursor:default;}
+    .feature-item:hover{border-color:rgba(255,215,0,0.2);transform:translateX(4px);background:var(--dark3);}
+    .f-icon{width:42px;height:42px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;}
+    .feature-item h4{font-size:0.92rem;font-weight:600;margin-bottom:3px;}
+    .feature-item p{font-size:0.8rem;color:var(--muted);line-height:1.6;}
+    /* ABOUT VISUAL */
+    .about-visual{position:relative;height:480px;}
+    .av-card{position:absolute;background:var(--dark3);border:1px solid rgba(255,215,0,0.15);border-radius:14px;padding:22px;box-shadow:0 24px 60px rgba(0,0,0,0.5);}
+    .av-card.big{width:290px;top:0;right:0;}
+    .av-card.sm{width:190px;bottom:40px;left:0;animation:float 5s ease-in-out infinite;}
+    .av-card.sm2{width:165px;top:160px;left:50px;animation:float 6s 1s ease-in-out infinite;}
+    @keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
+    .chart-bar{display:flex;gap:8px;align-items:flex-end;height:90px;margin-top:14px;}
+    .bar{flex:1;border-radius:3px 3px 0 0;}
+    .bar-l{font-size:0.6rem;color:var(--muted);text-align:center;margin-top:5px;}
+    /* COURSES */
+    #courses{background:var(--black);}
+    .courses-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:20px;margin-top:56px;}
+    .c-card{background:var(--dark2);border:1px solid rgba(255,255,255,0.05);border-radius:12px;overflow:hidden;transition:all 0.3s;position:relative;}
+    .c-card:hover{transform:translateY(-6px);border-color:rgba(255,215,0,0.2);box-shadow:0 20px 50px rgba(0,0,0,0.4);}
+    .c-glow{position:absolute;top:0;left:0;right:0;height:3px;}
+    .c-body{padding:24px;}
+    .c-tag{display:inline-block;padding:3px 10px;border-radius:100px;font-size:0.65rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:14px;}
+    .tag-hw{background:rgba(255,45,120,0.12);color:var(--pink);}
+    .tag-sw{background:rgba(0,245,255,0.1);color:var(--cyan);}
+    .c-card h3{font-size:0.98rem;font-weight:700;margin-bottom:8px;line-height:1.4;}
+    .c-card p{font-size:0.78rem;color:var(--muted);line-height:1.65;}
+    .c-foot{padding:14px 24px;border-top:1px solid rgba(255,255,255,0.04);display:flex;justify-content:space-between;align-items:center;}
+    .c-meta{font-size:0.72rem;color:var(--muted);}
+    .c-meta span{color:var(--gold);}
+    .c-arrow{width:32px;height:32px;border:1px solid rgba(255,215,0,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:0.9rem;transition:all 0.3s;}
+    .c-card:hover .c-arrow{background:var(--gold);color:var(--black);}
+    /* HOW IT WORKS */
+    #how{background:var(--dark);}
+    .steps-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:24px;margin-top:56px;}
+    .step{background:var(--dark2);border:1px solid rgba(255,255,255,0.04);border-radius:12px;padding:28px;transition:all 0.3s;position:relative;overflow:hidden;}
+    .step::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),transparent);}
+    .step:hover{transform:translateY(-4px);border-color:rgba(255,215,0,0.15);}
+    .step-num{font-family:'Playfair Display',serif;font-size:3rem;font-weight:900;color:rgba(255,215,0,0.08);line-height:1;margin-bottom:12px;}
+    .step-icon{font-size:1.6rem;margin-bottom:14px;}
+    .step h4{font-size:0.95rem;font-weight:700;margin-bottom:8px;}
+    .step p{font-size:0.8rem;color:var(--muted);line-height:1.65;}
+    /* ROLES */
+    #roles{background:var(--black);}
+    .roles-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;margin-top:56px;}
+    .role-card{border-radius:14px;padding:32px;position:relative;overflow:hidden;transition:all 0.3s;}
+    .role-card:hover{transform:translateY(-4px);}
+    .role-card.student{background:linear-gradient(135deg,rgba(0,245,255,0.06),rgba(0,245,255,0.02));border:1px solid rgba(0,245,255,0.15);}
+    .role-card.instructor{background:linear-gradient(135deg,rgba(255,215,0,0.06),rgba(255,215,0,0.02));border:1px solid rgba(255,215,0,0.15);}
+    .role-card.admin{background:linear-gradient(135deg,rgba(139,92,246,0.06),rgba(139,92,246,0.02));border:1px solid rgba(139,92,246,0.15);}
+    .role-icon{font-size:2.2rem;margin-bottom:16px;}
+    .role-card h3{font-size:1.1rem;font-weight:700;margin-bottom:10px;}
+    .role-card p{font-size:0.8rem;color:var(--muted);line-height:1.7;margin-bottom:20px;}
+    .role-features{display:flex;flex-direction:column;gap:8px;}
+    .role-feat{font-size:0.78rem;color:var(--muted);display:flex;align-items:center;gap:8px;}
+    .role-feat::before{content:'✓';color:var(--gold);font-weight:700;flex-shrink:0;}
+    /* CTA */
+    #cta{background:var(--dark);text-align:center;}
+    .cta-inner{max-width:600px;margin:0 auto;}
+    .cta-inner h2{font-family:'Playfair Display',serif;font-size:clamp(2rem,5vw,3.5rem);font-weight:900;line-height:1.1;margin-bottom:20px;}
+    .cta-inner p{color:var(--muted);font-size:1rem;line-height:1.8;margin-bottom:40px;}
+    .cta-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;}
+    /* FOOTER */
+    footer{background:var(--dark2);border-top:1px solid rgba(255,255,255,0.04);padding:60px 5% 30px;}
+    .footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:48px;margin-bottom:48px;}
+    .footer-brand .logo{display:block;margin-bottom:14px;}
+    .footer-brand p{font-size:0.82rem;color:var(--muted);line-height:1.75;max-width:280px;}
+    .footer-col h4{font-size:0.82rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin-bottom:18px;}
+    .footer-col a{display:block;font-size:0.82rem;color:var(--muted);text-decoration:none;margin-bottom:10px;transition:color 0.3s;}
+    .footer-col a:hover{color:var(--gold);}
+    .footer-bottom{display:flex;justify-content:space-between;align-items:center;padding-top:28px;border-top:1px solid rgba(255,255,255,0.04);}
+    .footer-bottom p{font-size:0.75rem;color:var(--muted);}
+    /* ANIMATIONS */
+    @keyframes fadeUp{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
+    .reveal{opacity:0;transform:translateY(28px);transition:opacity 0.7s ease,transform 0.7s ease;}
+    .reveal.visible{opacity:1;transform:translateY(0);}
+    /* RESPONSIVE */
+    @media(max-width:1024px){
+      .about-grid{grid-template-columns:1fr;gap:40px;}
+      .footer-grid{grid-template-columns:1fr 1fr;gap:32px;}
+      .stats-strip{grid-template-columns:repeat(2,1fr);}
+      .strip-item{border-bottom:1px solid rgba(255,255,255,0.04);}
+    }
+    @media(max-width:768px){
+      .nav-links,.nav-cta{display:none;}
+      .hamburger{display:flex;}
+      .about-visual{display:none;}
+      .about-grid{grid-template-columns:1fr;}
+      .footer-grid{grid-template-columns:1fr;}
+      .stats-strip{grid-template-columns:repeat(2,1fr);}
+      .footer-bottom{flex-direction:column;gap:12px;text-align:center;}
+      .hero-stats{gap:24px;}
+      .cta-btns{flex-direction:column;align-items:center;}
+    }
+  </style>
+</head>
+<body>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <button class="mobile-close" onclick="closeMobileMenu()">✕</button>
+  <a href="#home" onclick="closeMobileMenu()">Home</a>
+  <a href="#about" onclick="closeMobileMenu()">About</a>
+  <a href="#courses" onclick="closeMobileMenu()">Courses</a>
+  <a href="#how" onclick="closeMobileMenu()">How It Works</a>
+  <a href="login.html" style="color:var(--gold);">Login →</a>
+</div>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a href="#home" class="logo" style="display:flex;align-items:center;gap:9px;">
+    <div id="navLogoWrap" style="width:34px;height:34px;border-radius:8px;background:linear-gradient(135deg,#FFD700,#B8960C);flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center;">
+      <img id="navLogoImg" src="" alt="" style="display:none;width:100%;height:100%;object-fit:contain;border-radius:7px;"/>
+      <span id="navLogoFb" style="font-size:1.1rem;font-weight:900;color:#000;">M</span>
+    </div>
+    Moor<span>Tech</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#home">Home</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#courses">Courses</a></li>
+    <li><a href="#how">How It Works</a></li>
+    <li><a href="#roles">For You</a></li>
+  </ul>
+  <a href="login.html" class="nav-cta">Login →</a>
+  <button class="hamburger" onclick="openMobileMenu()"><span></span><span></span><span></span></button>
+</nav>
+
+<!-- HERO -->
+<section id="home">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="badge"><div class="dot"></div> Next-Gen Learning Platform</div>
+    <h1>Learn Without<br/><span class="gold-text">Limits.</span><br/><span class="outline-text">Grow Fast.</span></h1>
+    <p class="hero-sub">Moor Tech is a premium digitalized learning and management platform built for technical education — featuring QR attendance, smart dashboards, and seamless course management.</p>
+    <div class="hero-btns">
+      <a href="login.html" class="btn-gold">Get Started →</a>
+      <a href="#about" class="btn-outline">Learn More</a>
+    </div>
+    <div class="hero-stats">
+      <div><div class="stat-num">500+</div><div class="stat-label">Students</div></div>
+      <div><div class="stat-num">24+</div><div class="stat-label">Courses</div></div>
+      <div><div class="stat-num">98%</div><div class="stat-label">Pass Rate</div></div>
+      <div><div class="stat-num">15+</div><div class="stat-label">Instructors</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS STRIP -->
+<div class="stats-strip">
+  <div class="strip-item reveal"><div class="strip-num">500+</div><div class="strip-label">Active Students</div></div>
+  <div class="strip-item reveal"><div class="strip-num">24</div><div class="strip-label">Courses Available</div></div>
+  <div class="strip-item reveal"><div class="strip-num">15+</div><div class="strip-label">Expert Instructors</div></div>
+  <div class="strip-item reveal"><div class="strip-num">98%</div><div class="strip-label">Satisfaction Rate</div></div>
+</div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-label reveal">Who We Are</div>
+  <div class="about-grid">
+    <div>
+      <h2 class="section-title reveal">Redefining Technical <span class="gold-text">Education</span></h2>
+      <p class="section-sub reveal">Moor Tech is built for the next generation of hardware and software engineers — combining world-class instruction with cutting-edge digital tools.</p>
+      <div class="feature-list">
+        <div class="feature-item reveal">
+          <div class="f-icon" style="background:rgba(255,215,0,0.08);">📱</div>
+          <div><h4>QR Code Attendance</h4><p>Students scan a unique QR code each class — instantly recorded and tracked in real-time.</p></div>
+        </div>
+        <div class="feature-item reveal">
+          <div class="f-icon" style="background:rgba(0,245,255,0.08);">📊</div>
+          <div><h4>Smart Dashboards</h4><p>Role-specific dashboards for students, instructors, and admins with live analytics.</p></div>
+        </div>
+        <div class="feature-item reveal">
+          <div class="f-icon" style="background:rgba(139,92,246,0.08);">📋</div>
+          <div><h4>Tests & Assignments</h4><p>Instructors create tests and assignments per course. Students take them directly on the platform.</p></div>
+        </div>
+        <div class="feature-item reveal">
+          <div class="f-icon" style="background:rgba(255,45,120,0.08);">🔔</div>
+          <div><h4>Smart Notifications</h4><p>Automated alerts for deadlines, grades and attendance — with student reply support.</p></div>
+        </div>
+      </div>
+    </div>
+    <div class="about-visual reveal">
+      <div class="av-card big">
+        <div style="font-size:0.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:14px;">Weekly Performance</div>
+        <div class="chart-bar">
+          <div style="display:flex;flex-direction:column;align-items:center;flex:1;"><div class="bar" style="height:60px;background:linear-gradient(180deg,var(--pink),rgba(255,45,120,0.2));"></div><div class="bar-l">Mon</div></div>
+          <div style="display:flex;flex-direction:column;align-items:center;flex:1;"><div class="bar" style="height:85px;background:linear-gradient(180deg,var(--gold),rgba(255,215,0,0.2));"></div><div class="bar-l">Tue</div></div>
+          <div style="display:flex;flex-direction:column;align-items:center;flex:1;"><div class="bar" style="height:55px;background:linear-gradient(180deg,var(--cyan),rgba(0,245,255,0.2));"></div><div class="bar-l">Wed</div></div>
+          <div style="display:flex;flex-direction:column;align-items:center;flex:1;"><div class="bar" style="height:90px;background:linear-gradient(180deg,var(--purple),rgba(139,92,246,0.2));"></div><div class="bar-l">Thu</div></div>
+          <div style="display:flex;flex-direction:column;align-items:center;flex:1;"><div class="bar" style="height:72px;background:linear-gradient(180deg,var(--green),rgba(0,255,136,0.2));"></div><div class="bar-l">Fri</div></div>
+        </div>
+        <div style="margin-top:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,0.05);">
+          <div style="font-size:0.7rem;color:var(--muted);">Average Score</div>
+          <div style="font-family:'Playfair Display',serif;font-size:1.7rem;color:var(--white);margin-top:3px;">87.4%</div>
+        </div>
+      </div>
+      <div class="av-card sm">
+        <div style="font-size:0.65rem;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:1px;">Attendance</div>
+        <div style="font-family:'Playfair Display',serif;font-size:1.9rem;color:var(--gold);">97%</div>
+        <div style="font-size:0.65rem;color:var(--green);margin-top:3px;">↑ Above target</div>
+      </div>
+      <div class="av-card sm2">
+        <div style="font-size:0.65rem;color:var(--muted);margin-bottom:6px;">Tests Passed</div>
+        <div style="font-family:'Playfair Display',serif;font-size:1.6rem;color:var(--cyan);">94%</div>
+        <div style="font-size:0.62rem;color:var(--muted);margin-top:2px;">↑ This semester</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COURSES -->
+<section id="courses">
+  <div class="section-label reveal">What We Offer</div>
+  <h2 class="section-title reveal">Our <span class="gold-text">Courses</span></h2>
+  <p class="section-sub reveal">Choose from our hardware and software tracks, designed by industry experts for real-world impact.</p>
+  <div class="courses-grid">
+    <div class="c-card reveal">
+      <div class="c-glow" style="background:linear-gradient(90deg,var(--pink),transparent);"></div>
+      <div class="c-body">
+        <div class="c-tag tag-hw">Hardware</div>
+        <h3>Computer Hardware Engineering</h3>
+        <p>Master PC assembly, circuit diagnostics, motherboard repair and advanced hardware troubleshooting including IoT.</p>
+      </div>
+      <div class="c-foot"><div class="c-meta">Duration: <span>6 weeks</span></div><div class="c-arrow">→</div></div>
+    </div>
+    <div class="c-card reveal">
+      <div class="c-glow" style="background:linear-gradient(90deg,var(--cyan),transparent);"></div>
+      <div class="c-body">
+        <div class="c-tag tag-sw">Software</div>
+        <h3>Full-Stack Web Development</h3>
+        <p>Build complete web applications using HTML, CSS, JavaScript and modern backend technologies.</p>
+      </div>
+      <div class="c-foot"><div class="c-meta">Duration: <span>6 weeks</span></div><div class="c-arrow">→</div></div>
+    </div>
+    <div class="c-card reveal">
+      <div class="c-glow" style="background:linear-gradient(90deg,var(--purple),transparent);"></div>
+      <div class="c-body">
+        <div class="c-tag tag-sw">Software</div>
+        <h3>Mobile App Development</h3>
+        <p>Design and develop cross-platform mobile applications for Android and iOS from scratch.</p>
+      </div>
+      <div class="c-foot"><div class="c-meta">Duration: <span>6 weeks</span></div><div class="c-arrow">→</div></div>
+    </div>
+    <div class="c-card reveal">
+      <div class="c-glow" style="background:linear-gradient(90deg,var(--gold),transparent);"></div>
+      <div class="c-body">
+        <div class="c-tag tag-hw">Hardware</div>
+        <h3>Networking & Infrastructure</h3>
+        <p>Network design, router configuration, cybersecurity fundamentals and enterprise IT infrastructure.</p>
+      </div>
+      <div class="c-foot"><div class="c-meta">Duration: <span>6 weeks</span></div><div class="c-arrow">→</div></div>
+    </div>
+    <div class="c-card reveal">
+      <div class="c-glow" style="background:linear-gradient(90deg,var(--green),transparent);"></div>
+      <div class="c-body">
+        <div class="c-tag tag-sw">Software</div>
+        <h3>Data Science & Analytics</h3>
+        <p>Learn Python, data visualization, machine learning fundamentals and business analytics.</p>
+      </div>
+      <div class="c-foot"><div class="c-meta">Duration: <span>6 weeks</span></div><div class="c-arrow">→</div></div>
+    </div>
+    <div class="c-card reveal">
+      <div class="c-glow" style="background:linear-gradient(90deg,var(--pink),transparent);"></div>
+      <div class="c-body">
+        <div class="c-tag tag-hw">Hardware</div>
+        <h3>CCTV & Security Systems</h3>
+        <p>Installation, configuration and maintenance of surveillance systems and security infrastructure.</p>
+      </div>
+      <div class="c-foot"><div class="c-meta">Duration: <span>6 weeks</span></div><div class="c-arrow">→</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="section-label reveal">Simple Process</div>
+  <h2 class="section-title reveal">How It <span class="gold-text">Works</span></h2>
+  <p class="section-sub reveal">From signup to certification in four simple steps.</p>
+  <div class="steps-grid">
+    <div class="step reveal">
+      <div class="step-num">01</div>
+      <div class="step-icon">📝</div>
+      <h4>Sign Up</h4>
+      <p>Create your student account and get approved by an admin within 24 hours.</p>
+    </div>
+    <div class="step reveal">
+      <div class="step-num">02</div>
+      <div class="step-icon">📚</div>
+      <h4>Get Enrolled</h4>
+      <p>Admin assigns you to your course — Hardware or Software track.</p>
+    </div>
+    <div class="step reveal">
+      <div class="step-num">03</div>
+      <div class="step-icon">📱</div>
+      <h4>Attend & Learn</h4>
+      <p>Scan QR codes for attendance, access materials, take tests and submit assignments.</p>
+    </div>
+    <div class="step reveal">
+      <div class="step-num">04</div>
+      <div class="step-icon">🏆</div>
+      <h4>Graduate</h4>
+      <p>Complete your course, get graded and receive your certification.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ROLES -->
+<section id="roles">
+  <div class="section-label reveal">Built For Everyone</div>
+  <h2 class="section-title reveal">Your Role on <span class="gold-text">Moor Tech</span></h2>
+  <p class="section-sub reveal">Three powerful dashboards designed for each user type.</p>
+  <div class="roles-grid" style="margin-top:56px;">
+    <div class="role-card student reveal">
+      <div class="role-icon">🎓</div>
+      <h3 style="color:var(--cyan);">Student</h3>
+      <p>Access everything you need to learn, track your progress and stay on top of your coursework.</p>
+      <div class="role-features">
+        <div class="role-feat">QR Attendance Scanning</div>
+        <div class="role-feat">Course Materials Access</div>
+        <div class="role-feat">Take Tests & Quizzes</div>
+        <div class="role-feat">View Grades & Progress</div>
+        <div class="role-feat">Notification Replies</div>
+      </div>
+    </div>
+    <div class="role-card instructor reveal">
+      <div class="role-icon">👨‍🏫</div>
+      <h3 style="color:var(--gold);">Instructor</h3>
+      <p>Manage your students, generate QR codes, create tests and track performance across courses.</p>
+      <div class="role-features">
+        <div class="role-feat">Generate QR Codes</div>
+        <div class="role-feat">Create Tests & Assignments</div>
+        <div class="role-feat">Upload Course Materials</div>
+        <div class="role-feat">Send Notifications</div>
+        <div class="role-feat">Grade Submissions</div>
+      </div>
+    </div>
+    <div class="role-card admin reveal">
+      <div class="role-icon">⚙️</div>
+      <h3 style="color:var(--purple);">Admin</h3>
+      <p>Full control over users, courses, enrollments and platform settings from one dashboard.</p>
+      <div class="role-features">
+        <div class="role-feat">Add & Manage Users</div>
+        <div class="role-feat">Create & Delete Courses</div>
+        <div class="role-feat">Auto & Manual Enrollment</div>
+        <div class="role-feat">Change User Passwords</div>
+        <div class="role-feat">Platform-wide Reports</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="cta">
+  <div class="cta-inner">
+    <div class="section-label reveal" style="text-align:center;">Ready to Start?</div>
+    <h2 class="section-title reveal">Join <span class="gold-text">Moor Tech</span><br/>Today</h2>
+    <p class="reveal">Sign up as a student and start your technical education journey. Instructors and admins are onboarded by the administrator.</p>
+    <div class="cta-btns reveal">
+      <a href="login.html" class="btn-gold">Create Account →</a>
+      <a href="login.html" class="btn-outline">Login Instead</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a href="#home" class="logo" style="display:flex;align-items:center;gap:9px;">
+        <div style="width:32px;height:32px;border-radius:7px;background:linear-gradient(135deg,#FFD700,#B8960C);flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center;">
+          <img id="footerLogoImg" src="" alt="" style="display:none;width:100%;height:100%;object-fit:contain;border-radius:6px;"/>
+          <span id="footerLogoFb" style="font-size:1rem;font-weight:900;color:#000;">M</span>
+        </div>
+        Moor<span>Tech</span>
+      </a>
+      <p style="margin-top:14px;">A premium digitalized learning and management platform built for Federal College of Animal Health and Production Technology, Moor Plantation, Ibadan.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Platform</h4>
+      <a href="#about">About</a>
+      <a href="#courses">Courses</a>
+      <a href="#how">How It Works</a>
+      <a href="#roles">Roles</a>
+    </div>
+    <div class="footer-col">
+      <h4>Access</h4>
+      <a href="login.html">Student Login</a>
+      <a href="login.html">Instructor Login</a>
+      <a href="login.html">Admin Login</a>
+    </div>
+    <div class="footer-col">
+      <h4>Institution</h4>
+      <a href="#">FCAH&PT</a>
+      <a href="#">Moor Plantation</a>
+      <a href="#">Ibadan, Nigeria</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 Moor Tech. All rights reserved.</p>
+    <p style="color:var(--muted);">Built for FCAH&PT · Powered by Supabase</p>
+  </div>
+</footer>
+
+<script>
+// NAV SCROLL
+window.addEventListener('scroll',()=>{
+  document.getElementById('navbar').classList.toggle('scrolled',window.scrollY>50);
+});
+
+// MOBILE MENU
+function openMobileMenu(){document.getElementById('mobileMenu').classList.add('open');document.body.style.overflow='hidden';}
+function closeMobileMenu(){document.getElementById('mobileMenu').classList.remove('open');document.body.style.overflow='';}
+
+// SCROLL REVEAL
+const observer=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');observer.unobserve(e.target);}});
+},{threshold:0.1});
+document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+
+// COUNTER ANIMATION
+function animateCount(el,target){
+  let start=0;
+  const duration=1500;
+  const step=target/duration*16;
+  const timer=setInterval(()=>{
+    start+=step;
+    if(start>=target){start=target;clearInterval(timer);}
+    el.textContent=Math.floor(start)+(el.dataset.suffix||'');
+  },16);
+}
+const countObserver=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      const nums=e.target.querySelectorAll('.strip-num');
+      nums.forEach(n=>{
+        const text=n.textContent;
+        const num=parseInt(text);
+        const suffix=text.replace(num,'');
+        n.dataset.suffix=suffix;
+        animateCount(n,num);
+      });
+      countObserver.unobserve(e.target);
+    }
+  });
+},{threshold:0.3});
+const strip=document.querySelector('.stats-strip');
+if(strip) countObserver.observe(strip);
+// ── MOOR TECH INLINE LOGO ──────────────────────────────────────────────
+function getMoorLogo(mode){
+  var dark = mode !== 'light';
+  var bg = dark ? '%230A0A0A' : '%23FFFFFF';
+  var lineStroke = dark ? '%2300000055' : '%23ffffff55';
+  var circleFill = dark ? '%2300000044' : '%23ffffff44';
+  var capFill = dark ? '%2300000099' : '%23ffffffcc';
+  var staffFill = dark ? '%23000000bb' : '%23ffffffbb';
+  var mColor = dark ? '%230A0A0A' : '%23B8960C';
+  var gradId = dark ? 'gd' : 'gl';
+  var svg = '%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2264%22 height=%2264%22 viewBox=%220 0 64 64%22 fill=%22none%22%3E'
+    + '%3Crect width=%2264%22 height=%2264%22 rx=%2213%22 fill=%22url(%23' + gradId + ')%22/%3E'
+    + '%3Cline x1=%228%22 y1=%2232%22 x2=%2216%22 y2=%2232%22 stroke=%22' + lineStroke + '%22 stroke-width=%221.8%22/%3E'
+    + '%3Cline x1=%2248%22 y1=%2232%22 x2=%2256%22 y2=%2232%22 stroke=%22' + lineStroke + '%22 stroke-width=%221.8%22/%3E'
+    + '%3Cline x1=%2232%22 y1=%228%22 x2=%2232%22 y2=%2216%22 stroke=%22' + lineStroke + '%22 stroke-width=%221.8%22/%3E'
+    + '%3Cline x1=%2232%22 y1=%2248%22 x2=%2232%22 y2=%2256%22 stroke=%22' + lineStroke + '%22 stroke-width=%221.8%22/%3E'
+    + '%3Ccircle cx=%228%22 cy=%2232%22 r=%222.5%22 fill=%22' + circleFill + '%22/%3E'
+    + '%3Ccircle cx=%2256%22 cy=%2232%22 r=%222.5%22 fill=%22' + circleFill + '%22/%3E'
+    + '%3Ccircle cx=%2232%22 cy=%228%22 r=%222.5%22 fill=%22' + circleFill + '%22/%3E'
+    + '%3Ccircle cx=%2232%22 cy=%2256%22 r=%222.5%22 fill=%22' + circleFill + '%22/%3E'
+    + '%3Cpolygon points=%2232,15 50,25 32,35 14,25%22 fill=%22' + capFill + '%22/%3E'
+    + '%3Crect x=%2248%22 y=%2225%22 width=%223%22 height=%2212%22 rx=%221.5%22 fill=%22' + staffFill + '%22/%3E'
+    + '%3Ccircle cx=%2249.5%22 cy=%2239%22 r=%223%22 fill=%22' + staffFill + '%22/%3E'
+    + '%3Ctext x=%2232%22 y=%2230%22 text-anchor=%22middle%22 font-family=%22Georgia,serif%22 font-size=%2213%22 font-weight=%22900%22 fill=%22' + mColor + '%22%3EM%3C/text%3E'
+    + '%3Cdefs%3E%3ClinearGradient id=%22' + gradId + '%22 x1=%220%22 y1=%220%22 x2=%2264%22 y2=%2264%22 gradientUnits=%22userSpaceOnUse%22%3E'
+    + '%3Cstop offset=%220%25%22 stop-color=%22%23FFE54D%22/%3E%3Cstop offset=%22100%25%22 stop-color=%22%23B8960C%22/%3E'
+    + '%3C/linearGradient%3E%3C/defs%3E%3C/svg%3E';
+  return 'data:image/svg+xml,' + svg;
+}
+// ──────────────────────────────────────────────────────────────────────
+
+function applyLogo(dataUrl){
+  var mode = localStorage.getItem('moortech_mode')||'dark';
+  var src = dataUrl || getMoorLogo(mode);
+  var ni=document.getElementById('navLogoImg');
+  var nf=document.getElementById('navLogoFb');
+  if(ni){ni.src=src;ni.style.display='block';}
+  if(nf) nf.style.display='none';
+  var fi=document.getElementById('footerLogoImg');
+  var ff=document.getElementById('footerLogoFb');
+  if(fi){fi.src=src;fi.style.display='block';}
+  if(ff) ff.style.display='none';
+}
+(function(){
+  var logo=localStorage.getItem('moortech_logo');
+  applyLogo(logo||null);
+})();
+
+</script>
+</body>
+</html>

@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Moor Tech – Login / Sign Up</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root{--primary:#FFD700;--primary-light:#FFE94D;--primary-dark:#B8960C;--primary-rgb:255,215,0;--black:#0A0A0A;--dark:#111111;--dark2:#1A1A1A;--dark3:#222222;--white:#FFFFFF;--text-muted:#888888;--green:#00FF88;--pink:#FF2D78;--radius:8px;}
+    [data-theme="cyan"]{--primary:#00F5FF;--primary-light:#6FFEFF;--primary-dark:#00B8C1;--primary-rgb:0,245,255;}
+    [data-theme="pink"]{--primary:#FF2D78;--primary-light:#FF6FA3;--primary-dark:#C4004F;--primary-rgb:255,45,120;}
+    [data-theme="purple"]{--primary:#8B5CF6;--primary-light:#A78BFA;--primary-dark:#6D28D9;--primary-rgb:139,92,246;}
+    [data-theme="green"]{--primary:#00FF88;--primary-light:#6FFFB8;--primary-dark:#00C463;--primary-rgb:0,255,136;}
+    [data-theme="orange"]{--primary:#FF6B00;--primary-light:#FF9A47;--primary-dark:#C45200;--primary-rgb:255,107,0;}
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{background:var(--black);color:var(--white);font-family:'DM Sans',sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;overflow-x:hidden;}
+    ::-webkit-scrollbar{width:4px;}
+    ::-webkit-scrollbar-track{background:var(--black);}
+    ::-webkit-scrollbar-thumb{background:var(--primary-dark);border-radius:2px;}
+    .bg-glow{position:fixed;inset:0;background:radial-gradient(ellipse 60% 60% at 20% 50%,rgba(var(--primary-rgb),0.07) 0%,transparent 60%),radial-gradient(ellipse 40% 40% at 80% 20%,rgba(var(--primary-rgb),0.04) 0%,transparent 50%);pointer-events:none;z-index:0;}
+    .bg-grid{position:fixed;inset:0;background-image:linear-gradient(rgba(var(--primary-rgb),0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(var(--primary-rgb),0.03) 1px,transparent 1px);background-size:50px 50px;pointer-events:none;z-index:0;}
+    .orb{position:fixed;border-radius:50%;filter:blur(80px);opacity:0.12;pointer-events:none;z-index:0;}
+    .orb1{width:400px;height:400px;background:var(--primary);top:-100px;left:-100px;animation:orbFloat 8s ease-in-out infinite;}
+    .orb2{width:300px;height:300px;background:var(--primary);bottom:-100px;right:-50px;animation:orbFloat 10s 2s ease-in-out infinite reverse;}
+    @keyframes orbFloat{0%,100%{transform:translate(0,0);}50%{transform:translate(30px,20px);}}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
+    @keyframes spin{to{transform:rotate(360deg);}}
+    .card-wrap{position:relative;z-index:10;width:100%;max-width:480px;padding:20px;animation:fadeUp 0.7s ease forwards;}
+    .card{background:rgba(17,17,17,0.92);border:1px solid rgba(var(--primary-rgb),0.2);border-radius:20px;padding:40px;backdrop-filter:blur(24px);box-shadow:0 32px 80px rgba(0,0,0,0.5);}
+    .logo{font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;color:var(--primary);text-decoration:none;display:block;text-align:center;margin-bottom:6px;}
+    .logo span{color:var(--white);}
+    .tagline{text-align:center;font-size:0.75rem;color:var(--text-muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:28px;}
+    .page-tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;background:var(--dark3);border-radius:10px;padding:5px;margin-bottom:28px;}
+    .page-tab{padding:10px;border-radius:7px;border:none;background:transparent;color:var(--text-muted);font-family:'DM Sans',sans-serif;font-size:0.85rem;font-weight:600;transition:all 0.3s;}
+    .page-tab.active{background:var(--primary);color:var(--black);}
+    .role-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;background:var(--dark3);border-radius:10px;padding:5px;margin-bottom:24px;}
+    .role-tab{padding:9px 6px;border-radius:7px;border:none;background:transparent;color:var(--text-muted);font-family:'DM Sans',sans-serif;font-size:0.75rem;font-weight:600;transition:all 0.3s;display:flex;align-items:center;justify-content:center;gap:4px;}
+    .role-tab.active{background:var(--primary);color:var(--black);}
+    .form-group{margin-bottom:16px;}
+    .form-group label{display:block;font-size:0.72rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:7px;}
+    .input-wrap{position:relative;}
+    .input-icon{position:absolute;left:13px;top:50%;transform:translateY(-50%);font-size:0.95rem;pointer-events:none;}
+    .form-group input{width:100%;background:var(--dark3);border:1px solid rgba(255,255,255,0.07);border-radius:var(--radius);padding:12px 16px 12px 40px;color:var(--white);font-family:'DM Sans',sans-serif;font-size:0.88rem;outline:none;transition:border-color 0.3s,box-shadow 0.3s;}
+    .form-group input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(var(--primary-rgb),0.12);}
+    .form-group input::placeholder{color:rgba(255,255,255,0.2);}
+    .pw-toggle{position:absolute;right:13px;top:50%;transform:translateY(-50%);background:none;border:none;font-size:0.95rem;color:var(--text-muted);}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+    .options-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
+    .remember{display:flex;align-items:center;gap:7px;}
+    .remember input{accent-color:var(--primary);width:15px;height:15px;}
+    .remember span{font-size:0.75rem;color:var(--text-muted);}
+    .forgot{font-size:0.75rem;color:var(--primary);text-decoration:none;background:none;border:none;font-family:'DM Sans',sans-serif;}
+    .submit-btn{width:100%;background:var(--primary);color:var(--black);border:none;padding:14px;border-radius:var(--radius);font-weight:700;font-size:0.92rem;font-family:'DM Sans',sans-serif;transition:all 0.3s;display:flex;align-items:center;justify-content:center;gap:8px;}
+    .submit-btn:hover{background:var(--primary-light);transform:translateY(-1px);box-shadow:0 8px 24px rgba(var(--primary-rgb),0.35);}
+    .submit-btn:disabled{opacity:0.7;pointer-events:none;}
+    .spinner{width:18px;height:18px;border:2px solid rgba(0,0,0,0.3);border-top-color:var(--black);border-radius:50%;animation:spin 0.7s linear infinite;display:none;}
+    .msg-box{border-radius:var(--radius);padding:10px 14px;font-size:0.78rem;margin-bottom:16px;display:none;line-height:1.5;}
+    .msg-error{background:rgba(255,45,120,0.1);border:1px solid rgba(255,45,120,0.3);color:#FF2D78;}
+    .msg-success{background:rgba(0,255,136,0.1);border:1px solid rgba(0,255,136,0.3);color:#00FF88;}
+    .divider{display:flex;align-items:center;gap:12px;margin:16px 0;}
+    .divider::before,.divider::after{content:'';flex:1;height:1px;background:rgba(255,255,255,0.07);}
+    .divider span{font-size:0.7rem;color:var(--text-muted);}
+    .back-link{display:block;text-align:center;font-size:0.75rem;color:var(--text-muted);text-decoration:none;}
+    .back-link:hover{color:var(--primary);}
+    .terms{font-size:0.72rem;color:var(--text-muted);text-align:center;margin-top:12px;line-height:1.6;}
+    .terms a{color:var(--primary);text-decoration:none;background:none;border:none;font-family:'DM Sans',sans-serif;font-size:0.72rem;}
+    .panel-open-btn{position:fixed;right:0;top:50%;transform:translateY(-50%);background:var(--dark2);border:1px solid rgba(var(--primary-rgb),0.25);border-right:none;border-radius:8px 0 0 8px;padding:14px 10px;z-index:200;display:flex;flex-direction:column;align-items:center;gap:6px;}
+    .plabel{font-size:0.55rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);writing-mode:vertical-rl;}
+    .theme-panel{position:fixed;right:-280px;top:50%;transform:translateY(-50%);width:260px;background:var(--dark2);border:1px solid rgba(var(--primary-rgb),0.2);border-radius:16px 0 0 16px;padding:24px;z-index:199;transition:right 0.4s cubic-bezier(0.34,1.56,0.64,1);box-shadow:-8px 0 32px rgba(0,0,0,0.4);overflow-y:auto;max-height:90vh;}
+    .theme-panel.open{right:0;}
+    .theme-panel-title{font-size:0.72rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--primary);margin-bottom:20px;}
+    .panel-close{position:absolute;top:16px;right:16px;background:none;border:none;color:var(--text-muted);font-size:1rem;}
+    .theme-section{margin-bottom:18px;}
+    .theme-section-label{font-size:0.68rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;}
+    .color-swatches{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+    .swatch{aspect-ratio:1;border-radius:8px;border:2px solid transparent;transition:all 0.2s;position:relative;overflow:hidden;}
+    .swatch:hover{transform:scale(1.08);}
+    .swatch.active{border-color:var(--white);box-shadow:0 0 12px rgba(255,255,255,0.3);}
+    .swatch-check{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:1rem;opacity:0;background:rgba(0,0,0,0.3);transition:opacity 0.2s;}
+    .swatch.active .swatch-check{opacity:1;}
+    .swatch-label{font-size:0.62rem;color:var(--text-muted);text-align:center;margin-top:4px;}
+    .bg-options{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+    .bg-option{padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.07);text-align:center;font-size:0.72rem;color:var(--text-muted);transition:all 0.3s;}
+    .bg-option:hover,.bg-option.active{border-color:var(--primary);color:var(--primary);background:rgba(var(--primary-rgb),0.05);}
+    .bg-preview{height:24px;border-radius:4px;margin-bottom:5px;}
+    .font-options{display:flex;flex-direction:column;gap:6px;}
+    .font-option{padding:8px 12px;border-radius:6px;border:1px solid rgba(255,255,255,0.06);font-size:0.78rem;color:var(--text-muted);transition:all 0.3s;display:flex;justify-content:space-between;align-items:center;}
+    .font-option:hover,.font-option.active{border-color:var(--primary);color:var(--white);background:rgba(var(--primary-rgb),0.05);}
+    .reset-btn{width:100%;padding:8px;border-radius:6px;border:1px solid rgba(255,255,255,0.07);background:none;color:var(--text-muted);font-size:0.72rem;font-family:'DM Sans',sans-serif;margin-top:4px;}
+    .reset-btn:hover{border-color:var(--primary);color:var(--primary);}
+    #toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--dark2);border-radius:8px;padding:13px 18px;font-size:0.85rem;display:flex;align-items:center;gap:10px;z-index:99999;box-shadow:0 8px 24px rgba(0,0,0,0.4);transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1);min-width:240px;max-width:340px;}
+    @media(max-width:520px){.card{padding:28px 20px;}.form-row{grid-template-columns:1fr;}}
+
+    [data-mode="light"]{--black:#F4F5F7;--dark:#FFFFFF;--dark2:#F8F9FA;--dark3:#ECEEF1;--white:#0A0A0A;--text-muted:#6B7280;}
+    [data-mode="light"] .card{background:rgba(255,255,255,0.97);border:1px solid #E5E7EB;}
+    [data-mode="light"] .form-group input{background:#F3F4F6;border:1px solid #D1D5DB;color:#0A0A0A;}
+    [data-mode="light"] .form-group input::placeholder{color:#9CA3AF;}
+    [data-mode="light"] .page-tab{color:#374151;}
+    [data-mode="light"] .role-tab{color:#374151;}
+    [data-mode="light"] .theme-panel{background:#FFFFFF;border:1px solid #E5E7EB;}
+  </style>
+</head>
+<body data-theme="gold" data-bg="dark" data-font="dm">
+  <div class="bg-glow"></div>
+  <div class="bg-grid"></div>
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+
+  <button class="panel-open-btn" onclick="togglePanel()">
+    <span>🎨</span><span class="plabel">Theme</span>
+  </button>
+
+  <div class="theme-panel" id="themePanel">
+    <button class="panel-close" onclick="togglePanel()">✕</button>
+    <div class="theme-panel-title">🎨 Customize</div>
+    <div class="theme-section">
+      <div class="theme-section-label">Accent Color</div>
+      <div class="color-swatches">
+        <div><div class="swatch active" style="background:#FFD700" data-theme="gold" onclick="setTheme('gold',this)"><div class="swatch-check">✓</div></div><div class="swatch-label">Gold</div></div>
+        <div><div class="swatch" style="background:#00F5FF" data-theme="cyan" onclick="setTheme('cyan',this)"><div class="swatch-check">✓</div></div><div class="swatch-label">Cyan</div></div>
+        <div><div class="swatch" style="background:#FF2D78" data-theme="pink" onclick="setTheme('pink',this)"><div class="swatch-check">✓</div></div><div class="swatch-label">Pink</div></div>
+        <div><div class="swatch" style="background:#8B5CF6" data-theme="purple" onclick="setTheme('purple',this)"><div class="swatch-check">✓</div></div><div class="swatch-label">Purple</div></div>
+        <div><div class="swatch" style="background:#00FF88" data-theme="green" onclick="setTheme('green',this)"><div class="swatch-check">✓</div></div><div class="swatch-label">Green</div></div>
+        <div><div class="swatch" style="background:#FF6B00" data-theme="orange" onclick="setTheme('orange',this)"><div class="swatch-check">✓</div></div><div class="swatch-label">Orange</div></div>
+      </div>
+    </div>
+    <div class="theme-section">
+      <div class="theme-section-label">Background</div>
+      <div class="bg-options">
+        <div class="bg-option active" data-bg="dark" onclick="setBg('dark',this)"><div class="bg-preview" style="background:#0A0A0A;border:1px solid rgba(255,255,255,0.1)"></div>Dark</div>
+        <div class="bg-option" data-bg="darker" onclick="setBg('darker',this)"><div class="bg-preview" style="background:#050505;border:1px solid rgba(255,255,255,0.1)"></div>Pitch</div>
+        <div class="bg-option" data-bg="navy" onclick="setBg('navy',this)"><div class="bg-preview" style="background:#0A0F1E;border:1px solid rgba(255,255,255,0.1)"></div>Navy</div>
+        <div class="bg-option" data-bg="forest" onclick="setBg('forest',this)"><div class="bg-preview" style="background:#0A1A0F;border:1px solid rgba(255,255,255,0.1)"></div>Forest</div>
+      </div>
+    </div>
+    <div class="theme-section">
+      <div class="theme-section-label">Font</div>
+      <div class="font-options">
+        <div class="font-option active" data-font="dm" onclick="setFont('dm',this)"><span>DM Sans</span><span style="font-family:'DM Sans',sans-serif;font-size:0.65rem;color:var(--text-muted)">Aa</span></div>
+        <div class="font-option" data-font="mono" onclick="setFont('mono',this)"><span>Monospace</span><span style="font-family:monospace;font-size:0.65rem;color:var(--text-muted)">Aa</span></div>
+        <div class="font-option" data-font="serif" onclick="setFont('serif',this)"><span>Serif</span><span style="font-family:Georgia,serif;font-size:0.65rem;color:var(--text-muted)">Aa</span></div>
+      </div>
+    </div>
+    <button class="reset-btn" onclick="resetTheme()">↺ Reset Default</button>
+  </div>
+
+  <div class="card-wrap">
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:8px;">
+        <div id="loginLogoWrap" style="width:46px;height:46px;border-radius:12px;background:linear-gradient(135deg,var(--primary),var(--primary-dark));flex-shrink:0;overflow:hidden;box-shadow:0 4px 16px rgba(var(--primary-rgb),0.35);display:flex;align-items:center;justify-content:center;">
+          <img id="loginLogoImg" src="" alt="" style="display:none;width:100%;height:100%;object-fit:contain;border-radius:10px;"/>
+          <span id="loginLogoFallback" style="font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:900;color:var(--black);">M</span>
+        </div>
+        <a href="index.html" class="logo" style="margin-bottom:0;">Moor<span>Tech</span></a>
+      </div>
+      <p class="tagline">FCAH&amp;PT · Digital Learning Platform</p>
+
+      <div class="page-tabs">
+        <button class="page-tab active" id="loginTab" onclick="switchTab('login')">🔐 Login</button>
+        <button class="page-tab" id="signupTab" onclick="switchTab('signup')">✨ Sign Up</button>
+      </div>
+
+      <!-- LOGIN -->
+      <div id="loginForm">
+        <div class="role-tabs">
+          <button class="role-tab active" id="lr_student" onclick="setLoginRole('student',this)">🎓 Student</button>
+          <button class="role-tab" id="lr_instructor" onclick="setLoginRole('instructor',this)">👨‍🏫 Instructor</button>
+          <button class="role-tab" id="lr_admin" onclick="setLoginRole('admin',this)">⚙️ Admin</button>
+        </div>
+        <div class="msg-box msg-error" id="loginError"></div>
+        <div class="msg-box msg-success" id="loginSuccess"></div>
+        <div class="form-group">
+          <label>Email Address</label>
+          <div class="input-wrap">
+            <span class="input-icon">✉️</span>
+            <input type="email" id="loginEmail" placeholder="you@moortech.edu.ng"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <div class="input-wrap">
+            <span class="input-icon">🔒</span>
+            <input type="password" id="loginPassword" placeholder="Enter your password"/>
+            <button type="button" class="pw-toggle" onclick="togglePw('loginPassword',this)">👁️</button>
+          </div>
+        </div>
+        <div class="options-row">
+          <label class="remember">
+            <input type="checkbox" id="rememberMe"/>
+            <span>Remember me</span>
+          </label>
+          <button class="forgot" onclick="forgotPassword()">Forgot password?</button>
+        </div>
+        <button class="submit-btn" id="loginBtn" onclick="handleLogin()">
+          <div class="spinner" id="loginSpinner"></div>
+          <span id="loginBtnText">Login to Moor Tech →</span>
+        </button>
+        <div class="terms" style="margin-top:14px;">Don't have an account? <a onclick="switchTab('signup')">Sign up here</a></div>
+      </div>
+
+      <!-- SIGNUP -->
+      <div id="signupForm" style="display:none;">
+        <div style="background:rgba(var(--primary-rgb),0.06);border:1px solid rgba(var(--primary-rgb),0.2);border-radius:var(--radius);padding:10px 14px;margin-bottom:18px;font-size:0.78rem;color:var(--text-muted);line-height:1.5;">
+          🎓 <strong style="color:var(--primary);">Student registration only.</strong> Instructors & admins are added by the administrator.
+        </div>
+        <div class="msg-box msg-error" id="signupError"></div>
+        <div class="msg-box msg-success" id="signupSuccess"></div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>First Name</label>
+            <div class="input-wrap">
+              <span class="input-icon">👤</span>
+              <input type="text" id="signupFirst" placeholder="John"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Last Name</label>
+            <div class="input-wrap">
+              <span class="input-icon">👤</span>
+              <input type="text" id="signupLast" placeholder="Doe"/>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Email Address</label>
+          <div class="input-wrap">
+            <span class="input-icon">✉️</span>
+            <input type="email" id="signupEmail" placeholder="you@moortech.edu.ng"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Phone Number</label>
+          <div class="input-wrap">
+            <span class="input-icon">📞</span>
+            <input type="tel" id="signupPhone" placeholder="+234 800 000 0000"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <div class="input-wrap">
+            <span class="input-icon">🔒</span>
+            <input type="password" id="signupPassword" placeholder="Min. 6 characters"/>
+            <button type="button" class="pw-toggle" onclick="togglePw('signupPassword',this)">👁️</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Confirm Password</label>
+          <div class="input-wrap">
+            <span class="input-icon">🔒</span>
+            <input type="password" id="signupConfirm" placeholder="Repeat your password"/>
+            <button type="button" class="pw-toggle" onclick="togglePw('signupConfirm',this)">👁️</button>
+          </div>
+        </div>
+        <button class="submit-btn" id="signupBtn" onclick="handleSignup()">
+          <div class="spinner" id="signupSpinner"></div>
+          <span id="signupBtnText">Create Account →</span>
+        </button>
+        <div class="terms">By signing up you agree to our <a href="#">Terms</a> and <a href="#">Privacy Policy</a></div>
+        <div class="terms" style="margin-top:8px;">Already have an account? <a onclick="switchTab('login')">Login here</a></div>
+      </div>
+
+      <div class="divider"><span>or</span></div>
+      <a href="index.html" class="back-link">← Back to Homepage</a>
+    </div>
+  </div>
+
+  <div id="toast"></div>
+
+  <script>
+    const SUPABASE_URL='https://dhwsvkuhfnamscdplgdj.supabase.co';
+    const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRod3N2a3VoZm5hbXNjZHBsZ2RqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI5MTU0NjIsImV4cCI6MjA4ODQ5MTQ2Mn0.paChxBS0L21kTNftTmdstLigj3e72cIyP6wdQfDQWHM';
+    const SUPABASE_SERVICE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRod3N2a3VoZm5hbXNjZHBsZ2RqIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MjkxNTQ2MiwiZXhwIjoyMDg4NDkxNDYyfQ.Fcpmns1Pvvq7nGdKLyFRiIEsrXMuviGw50NadX7Jjvs';
+    let loginRole='student', signupRole='student';
+
+    document.addEventListener('DOMContentLoaded',()=>{
+      loadPreferences();
+      const token=localStorage.getItem('moortech_token');
+      const role=localStorage.getItem('moortech_role');
+      if(token&&role) redirectByRole(role);
+    });
+
+    function switchTab(tab){
+      const isLogin=tab==='login';
+      document.getElementById('loginForm').style.display=isLogin?'block':'none';
+      document.getElementById('signupForm').style.display=isLogin?'none':'block';
+      document.getElementById('loginTab').classList.toggle('active',isLogin);
+      document.getElementById('signupTab').classList.toggle('active',!isLogin);
+      clearMessages();
+    }
+
+    function setLoginRole(role,btn){
+      loginRole=role;
+      document.querySelectorAll('[id^="lr_"]').forEach(b=>{b.style.background='transparent';b.style.color='var(--text-muted)';});
+      btn.style.background='var(--primary)';btn.style.color='var(--black)';
+    }
+
+    function setSignupRole(role,btn){
+      signupRole=role;
+      document.querySelectorAll('[id^="sr_"]').forEach(b=>{b.style.background='transparent';b.style.color='var(--text-muted)';});
+      btn.style.background='var(--primary)';btn.style.color='var(--black)';
+    }
+
+    function togglePw(id,btn){
+      const input=document.getElementById(id);
+      input.type=input.type==='password'?'text':'password';
+      btn.textContent=input.type==='password'?'👁️':'🙈';
+    }
+
+    function clearMessages(){
+      ['loginError','loginSuccess','signupError','signupSuccess'].forEach(id=>{
+        const el=document.getElementById(id);
+        if(el){el.style.display='none';el.textContent='';}
+      });
+    }
+
+    function showMsg(id,msg){
+      const el=document.getElementById(id);
+      if(el){el.textContent=msg;el.style.display='block';}
+    }
+
+    function setLoading(btnId,spinnerId,textId,loading){
+      const btn=document.getElementById(btnId);
+      const spinner=document.getElementById(spinnerId);
+      const text=document.getElementById(textId);
+      if(btn) btn.disabled=loading;
+      if(spinner) spinner.style.display=loading?'block':'none';
+      if(text) text.style.display=loading?'none':'inline';
+    }
+
+    async function handleLogin(){
+      const email=document.getElementById('loginEmail').value.trim();
+      const password=document.getElementById('loginPassword').value;
+      clearMessages();
+      if(!email||!password){showMsg('loginError','⚠️ Please enter your email and password.');return;}
+      setLoading('loginBtn','loginSpinner','loginBtnText',true);
+      try{
+        const res=await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`,{
+          method:'POST',
+          headers:{'Content-Type':'application/json','apikey':SUPABASE_KEY},
+          body:JSON.stringify({email,password})
+        });
+        const data=await res.json();
+        if(!res.ok||data.error) throw new Error(data.error_description||data.msg||'Invalid email or password.');
+        const token=data.access_token;
+        const userId=data.user.id;
+        const profileRes=await fetch(`${SUPABASE_URL}/rest/v1/users?id=eq.${userId}&select=*`,{
+          headers:{'apikey':SUPABASE_SERVICE_KEY,'Authorization':`Bearer ${SUPABASE_SERVICE_KEY}`,'Accept':'application/json'}
+        });
+        let profile=null;
+        if(profileRes.ok){
+          const profiles=await profileRes.json();
+          if(Array.isArray(profiles)&&profiles.length>0) profile=profiles[0];
+        }
+        if(!profile){
+          // No profile — create one with selected role using service key
+          await fetch(`${SUPABASE_URL}/rest/v1/users`,{
+            method:'POST',
+            headers:{'apikey':SUPABASE_SERVICE_KEY,'Authorization':`Bearer ${SUPABASE_SERVICE_KEY}`,'Content-Type':'application/json','Prefer':'return=minimal'},
+            body:JSON.stringify({id:userId,name:email.split('@')[0],email,password:'',role:loginRole,approved:loginRole!=='student',created_at:new Date().toISOString()})
+          });
+          profile={id:userId,email,role:loginRole,name:email.split('@')[0],approved:loginRole!=='student'};
+        }
+        // Role mismatch — selected wrong tab
+        if(profile.role && profile.role!==loginRole){
+          setLoading('loginBtn','loginSpinner','loginBtnText',false);
+          showMsg('loginError',`❌ This is a "${profile.role}" account. Please select the "${profile.role}" tab.`);
+          return;
+        }
+        // Student approval check
+        if(profile.role==='student' && !profile.approved){
+          setLoading('loginBtn','loginSpinner','loginBtnText',false);
+          showMsg('loginError','⏳ Your account is pending admin approval. Please wait.');
+          return;
+        }
+        const userObj={id:userId,email,name:profile.name||email.split('@')[0],role:profile.role||loginRole,phone:profile.phone||''};
+        localStorage.setItem('moortech_token',token);
+        localStorage.setItem('moortech_refresh',data.refresh_token||'');
+        localStorage.setItem('moortech_user',JSON.stringify(userObj));
+        localStorage.setItem('moortech_role',userObj.role);
+        showMsg('loginSuccess','✅ Login successful! Redirecting...');
+        showToast('Welcome back! 👋','success');
+        setTimeout(()=>redirectByRole(userObj.role),1200);
+      }catch(err){
+        setLoading('loginBtn','loginSpinner','loginBtnText',false);
+        showMsg('loginError','❌ '+err.message);
+      }
+    }
+
+    async function handleSignup(){
+      const firstName=document.getElementById('signupFirst').value.trim();
+      const lastName=document.getElementById('signupLast').value.trim();
+      const email=document.getElementById('signupEmail').value.trim();
+      const phone=document.getElementById('signupPhone').value.trim();
+      const password=document.getElementById('signupPassword').value;
+      const confirm=document.getElementById('signupConfirm').value;
+      signupRole='student'; // Always student — instructors/admins are added by admin
+      clearMessages();
+      if(!firstName||!lastName||!email||!phone||!password||!confirm){showMsg('signupError','⚠️ Please fill in all fields.');return;}
+      if(password.length<6){showMsg('signupError','⚠️ Password must be at least 6 characters.');return;}
+      if(password!==confirm){showMsg('signupError','⚠️ Passwords do not match.');return;}
+      setLoading('signupBtn','signupSpinner','signupBtnText',true);
+      try{
+        const authRes=await fetch(`${SUPABASE_URL}/auth/v1/signup`,{
+          method:'POST',
+          headers:{'Content-Type':'application/json','apikey':SUPABASE_KEY},
+          body:JSON.stringify({email,password})
+        });
+        const authData=await authRes.json();
+        if(!authRes.ok||authData.error) throw new Error(authData.msg||authData.error_description||'Signup failed. Email may already be in use.');
+        const userId=authData.user.id;
+        const token=authData.access_token;
+        await fetch(`${SUPABASE_URL}/rest/v1/users`,{
+          method:'POST',
+          headers:{'Content-Type':'application/json','apikey':SUPABASE_KEY,'Authorization':`Bearer ${token}`,'Prefer':'return=minimal'},
+          body:JSON.stringify({id:userId,name:`${firstName} ${lastName}`,email,password,role:signupRole,approved:false,created_at:new Date().toISOString()})
+        });
+        const userObj={id:userId,email,name:`${firstName} ${lastName}`,role:signupRole,phone};
+        localStorage.setItem('moortech_token',token);
+        localStorage.setItem('moortech_refresh',authData.refresh_token||'');
+        localStorage.setItem('moortech_user',JSON.stringify(userObj));
+        localStorage.setItem('moortech_role',signupRole);
+        setLoading('signupBtn','signupSpinner','signupBtnText',false);
+        showMsg('signupSuccess','✅ Account created! Taking you to your dashboard...');
+        showToast('Welcome to Moor Tech! 🎉','success');
+        setTimeout(()=>redirectByRole(signupRole),1500);
+      }catch(err){
+        setLoading('signupBtn','signupSpinner','signupBtnText',false);
+        showMsg('signupError','❌ '+err.message);
+      }
+    }
+
+    async function forgotPassword(){
+      const email=document.getElementById('loginEmail').value.trim();
+      if(!email){showMsg('loginError','⚠️ Enter your email first then click Forgot Password.');return;}
+      try{
+        await fetch(`${SUPABASE_URL}/auth/v1/recover`,{
+          method:'POST',
+          headers:{'Content-Type':'application/json','apikey':SUPABASE_KEY},
+          body:JSON.stringify({email,redirectTo:'https://moortech.great-site.net/reset-password.html'})
+        });
+        showMsg('loginSuccess','✅ Password reset email sent! Check your inbox.');
+      }catch(err){
+        showMsg('loginError','❌ Failed to send reset email. Try again.');
+      }
+    }
+
+    function redirectByRole(role){
+      if(role==='student') window.location.href='student-dashboard.html';
+      else if(role==='instructor') window.location.href='instructor-dashboard.html';
+      else if(role==='admin') window.location.href='admin-dashboard.html';
+      else{ localStorage.clear(); window.location.href='login.html'; }
+    }
+
+    function showToast(msg,type='success'){
+      const colors={success:'#00FF88',error:'#FF2D78',warning:'#FFD700',info:'#00F5FF'};
+      const icons={success:'✓',error:'✕',warning:'⚠',info:'ℹ'};
+      const t=document.getElementById('toast');
+      t.style.cssText=`position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--dark2);border:1px solid ${colors[type]};border-left:4px solid ${colors[type]};color:#fff;padding:13px 18px;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:0.85rem;display:flex;align-items:center;gap:10px;z-index:99999;box-shadow:0 8px 24px rgba(0,0,0,0.4);transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1);min-width:240px;max-width:340px;`;
+      t.innerHTML=`<span style="color:${colors[type]};font-weight:700;">${icons[type]}</span><span>${msg}</span>`;
+      setTimeout(()=>t.style.transform='translateX(-50%) translateY(0)',10);
+      setTimeout(()=>{t.style.transform='translateX(-50%) translateY(100px)';},3500);
+    }
+
+    const themes={gold:{primary:'#FFD700',light:'#FFE94D',dark:'#B8960C',rgb:'255,215,0'},cyan:{primary:'#00F5FF',light:'#6FFEFF',dark:'#00B8C1',rgb:'0,245,255'},pink:{primary:'#FF2D78',light:'#FF6FA3',dark:'#C4004F',rgb:'255,45,120'},purple:{primary:'#8B5CF6',light:'#A78BFA',dark:'#6D28D9',rgb:'139,92,246'},green:{primary:'#00FF88',light:'#6FFFB8',dark:'#00C463',rgb:'0,255,136'},orange:{primary:'#FF6B00',light:'#FF9A47',dark:'#C45200',rgb:'255,107,0'}};
+    const backgrounds={dark:{black:'#0A0A0A',dark:'#111111',dark2:'#1A1A1A',dark3:'#222222'},darker:{black:'#050505',dark:'#0A0A0A',dark2:'#111111',dark3:'#161616'},navy:{black:'#0A0F1E',dark:'#0E1528',dark2:'#141D35',dark3:'#1A2542'},forest:{black:'#0A1A0F',dark:'#0E2014',dark2:'#14291A',dark3:'#1A3320'}};
+    const fonts={dm:"'DM Sans',sans-serif",mono:"'Courier New',monospace",serif:"Georgia,serif"};
+    function setTheme(theme,el){const t=themes[theme];if(!t)return;const r=document.documentElement;r.style.setProperty('--primary',t.primary);r.style.setProperty('--primary-light',t.light);r.style.setProperty('--primary-dark',t.dark);r.style.setProperty('--primary-rgb',t.rgb);document.body.setAttribute('data-theme',theme);document.querySelectorAll('.swatch').forEach(s=>s.classList.remove('active'));document.querySelectorAll(`.swatch[data-theme="${theme}"]`).forEach(s=>s.classList.add('active'));localStorage.setItem('moortech_theme',theme);}
+    function setBg(bg,el){const b=backgrounds[bg];if(!b)return;const r=document.documentElement;r.style.setProperty('--black',b.black);r.style.setProperty('--dark',b.dark);r.style.setProperty('--dark2',b.dark2);r.style.setProperty('--dark3',b.dark3);document.body.setAttribute('data-bg',bg);document.querySelectorAll('.bg-option').forEach(x=>x.classList.remove('active'));document.querySelectorAll(`.bg-option[data-bg="${bg}"]`).forEach(x=>x.classList.add('active'));localStorage.setItem('moortech_bg',bg);}
+    function setFont(font,el){document.body.style.fontFamily=fonts[font];document.body.setAttribute('data-font',font);document.querySelectorAll('.font-option').forEach(f=>f.classList.remove('active'));document.querySelectorAll(`.font-option[data-font="${font}"]`).forEach(f=>f.classList.add('active'));localStorage.setItem('moortech_font',font);}
+    function resetTheme(){setTheme('gold');setBg('dark');setFont('dm');}
+    function loadPreferences(){
+  // Restore mode first (needed for logo variant)
+  const mode=localStorage.getItem('moortech_mode')||'dark';
+  document.body.setAttribute('data-mode',mode);
+  // Restore logo — inline SVG, no external files needed
+  // ── MOOR TECH INLINE LOGO ──────────────────────────────────────────────
+function getMoorLogo(mode){
+  var dark = mode !== 'light';
+  var bg = dark ? '%230A0A0A' : '%23FFFFFF';
+  var lineStroke = dark ? '%2300000055' : '%23ffffff55';
+  var circleFill = dark ? '%2300000044' : '%23ffffff44';
+  var capFill = dark ? '%2300000099' : '%23ffffffcc';
+  var staffFill = dark ? '%23000000bb' : '%23ffffffbb';
+  var mColor = dark ? '%230A0A0A' : '%23B8960C';
+  var gradId = dark ? 'gd' : 'gl';
+  var svg = '%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2264%22 height=%2264%22 viewBox=%220 0 64 64%22 fill=%22none%22%3E'
+    + '%3Crect width=%2264%22 height=%2264%22 rx=%2213%22 fill=%22url(%23' + gradId + ')%22/%3E'
+    + '%3Cline x1=%228%22 y1=%2232%22 x2=%2216%22 y2=%2232%22 stroke=%22' + lineStroke + '%22 stroke-width=%221.8%22/%3E'
+    + '%3Cline x1=%2248%22 y1=%2232%22 x2=%2256%22 y2=%2232%22 stroke=%22' + lineStroke + '%22 stroke-width=%221.8%22/%3E'
+    + '%3Cline x1=%2232%22 y1=%228%22 x2=%2232%22 y2=%2216%22 stroke=%22' + lineStroke + '%22 stroke-width=%221.8%22/%3E'
+    + '%3Cline x1=%2232%22 y1=%2248%22 x2=%2232%22 y2=%2256%22 stroke=%22' + lineStroke + '%22 stroke-width=%221.8%22/%3E'
+    + '%3Ccircle cx=%228%22 cy=%2232%22 r=%222.5%22 fill=%22' + circleFill + '%22/%3E'
+    + '%3Ccircle cx=%2256%22 cy=%2232%22 r=%222.5%22 fill=%22' + circleFill + '%22/%3E'
+    + '%3Ccircle cx=%2232%22 cy=%228%22 r=%222.5%22 fill=%22' + circleFill + '%22/%3E'
+    + '%3Ccircle cx=%2232%22 cy=%2256%22 r=%222.5%22 fill=%22' + circleFill + '%22/%3E'
+    + '%3Cpolygon points=%2232,15 50,25 32,35 14,25%22 fill=%22' + capFill + '%22/%3E'
+    + '%3Crect x=%2248%22 y=%2225%22 width=%223%22 height=%2212%22 rx=%221.5%22 fill=%22' + staffFill + '%22/%3E'
+    + '%3Ccircle cx=%2249.5%22 cy=%2239%22 r=%223%22 fill=%22' + staffFill + '%22/%3E'
+    + '%3Ctext x=%2232%22 y=%2230%22 text-anchor=%22middle%22 font-family=%22Georgia,serif%22 font-size=%2213%22 font-weight=%22900%22 fill=%22' + mColor + '%22%3EM%3C/text%3E'
+    + '%3Cdefs%3E%3ClinearGradient id=%22' + gradId + '%22 x1=%220%22 y1=%220%22 x2=%2264%22 y2=%2264%22 gradientUnits=%22userSpaceOnUse%22%3E'
+    + '%3Cstop offset=%220%25%22 stop-color=%22%23FFE54D%22/%3E%3Cstop offset=%22100%25%22 stop-color=%22%23B8960C%22/%3E'
+    + '%3C/linearGradient%3E%3C/defs%3E%3C/svg%3E';
+  return 'data:image/svg+xml,' + svg;
+}
+// ──────────────────────────────────────────────────────────────────────
+  var customLogo=localStorage.getItem('moortech_logo');
+  var logoSrc=customLogo||getMoorLogo(mode);
+  var img=document.getElementById('loginLogoImg');
+  var fb=document.getElementById('loginLogoFallback');
+  if(img){img.src=logoSrc;img.style.display='block';}
+  if(fb) fb.style.display='none';setTheme(localStorage.getItem('moortech_theme')||'gold');setBg(localStorage.getItem('moortech_bg')||'dark');setFont(localStorage.getItem('moortech_font')||'dm');}
+    function togglePanel(){document.getElementById('themePanel').classList.toggle('open');}
+    document.addEventListener('click',e=>{const panel=document.getElementById('themePanel');const btn=document.querySelector('.panel-open-btn');if(panel&&btn&&!panel.contains(e.target)&&!btn.contains(e.target))panel.classList.remove('open');});
+    document.addEventListener('keydown',e=>{if(e.key==='Enter'){const isLogin=document.getElementById('signupForm').style.display==='none';if(isLogin)handleLogin();else handleSignup();}});
+  </script>
+</body>
+</html>
